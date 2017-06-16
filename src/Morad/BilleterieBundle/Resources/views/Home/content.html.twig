@@ -1,0 +1,47 @@
+{% extends "MoradBilleterieBundle:Home:index.html.twig" %}
+{% block titre %}
+
+<h2>Réservation</h2><hr>
+
+{% endblock %}
+
+{% block tarif %}
+<h2>Les tarifs</h2><hr>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Type d'entrer</th>
+      <th>Journée</th>
+      <th>1/2 Journée</th>
+      <th>Conditions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Normal</th>
+      <td>16€</td>
+      <td>8€</td>
+      <td>A partir de 12 ans</td>
+    </tr>
+    <tr>
+      <th scope="row">Enfant</th>
+      <td>8€</td>
+      <td>4€</td>
+      <td>De 4 ans à 12 ans</td>
+    </tr>
+    <tr>
+      <th scope="row">Senior</th>
+      <td>12€</td>
+      <td>6€</td>
+      <td>A partir de 60 ans</td>
+    </tr>
+    <tr>
+      <th scope="row">Réduit*</th>
+      <td>10€</td>
+      <td>5€</td>
+      <td>Etudiant, employé du musée, service du Ministère de la culture, militaire…</td>
+    </tr>
+  </tbody>
+</table>
+
+{% endblock %}

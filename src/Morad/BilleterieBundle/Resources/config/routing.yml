@@ -1,0 +1,3 @@
+morad_billeterie_homepage:
+    path:     /
+    defaults: { _controller: MoradBilleterieBundle:Home:index }

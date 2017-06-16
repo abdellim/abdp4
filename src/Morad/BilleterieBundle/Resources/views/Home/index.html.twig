@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% block title %}Billeterie du Louvre{% endblock %}</title>
+
+    {% block stylesheets %}
+    {# On charge le CSS de bootstrap depuis le site directement #}
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/ui-lightness/jquery-ui.css" type="text/css" />
+    <link rel="stylesheet" href="http://localhost/p4/web/style.css">
+    {% endblock %}
+
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header" style="text-align: center;">
+            <div class="row">
+              <div class="col-md-6"><a class="navbar-brand" href="#">Billeterie du Louvre</a></div>
+              <div class="col-md-6"><img src="http://localhost/p4/web/logo-louvre.png" alt="good vybes" /></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.container-fluid -->
+    </nav>
+    <div class="container-fluid">
+      <div class="col-md-6">
+        <div class="jumbotron" style="background-color: #e6ffff; opacity: 0.85">
+          {% block tarif %}
+          {% endblock %}
+        </div>
+      </div>
+      <div class="col-md-6" style="opacity: 0.85">
+        <div class="jumbotron">
+          {% block titre %}
+          {% endblock %}
+          {{ include("MoradBilleterieBundle:Home:form.html.twig") }}
+        </div>
+        <div class="jumbotron" style="background-color: #e6fff2; opacity: 0.85">
+          <p>Montant de votre commande : {{ prix }}€</p>
+        </div>
+      </div>
+    </div>
+  </body>.
+{% block javascripts %}
+
+       
+{% endblock %}
+</html>
