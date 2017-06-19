@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -31,20 +30,20 @@
       </div><!-- /.container-fluid -->
     </nav>
     <div class="container-fluid">
-      <div class="col-md-6">
-        <div class="jumbotron" style="background-color: #e6ffff; opacity: 0.85">
-          {% block tarif %}
-          {% endblock %}
-        </div>
-      </div>
-      <div class="col-md-6" style="opacity: 0.85">
+ 
+      <div class="col-md-8" style="opacity: 0.85">
         <div class="jumbotron">
           {% block titre %}
           {% endblock %}
-          {{ include("MoradBilleterieBundle:Home:form.html.twig") }}
-        </div>
-        <div class="jumbotron" style="background-color: #e6fff2; opacity: 0.85">
+          {{ include("MoradBilleterieBundle:Home:contentFormCoordonnees.html.twig") }}
 
+        </div>
+      </div>
+      <div class="col-md-4" style="opacity: 0.85">
+        <div class="jumbotron">
+          {% block prix %}
+          <h3>Tarifs</h3>
+          {% endblock %}    
         </div>
       </div>
     </div>

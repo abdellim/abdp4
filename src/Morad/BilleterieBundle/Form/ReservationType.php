@@ -6,7 +6,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -14,9 +13,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\LabelType;
-use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Morad\BilleterieBundle\Form\CoordonneesType;
+
 
 
 
@@ -30,23 +30,23 @@ class ReservationType extends AbstractType
         $builder
             ->add('date', DateType::class, [
                  'widget' => 'single_text',
-                 'attr' => ['class' => 'js-datepicker'], 
+                 'format' => 'dd/MM/yyyy'
 
             ])
-            ->add('nom', TextType::class)
-            ->add('prenom', TextType::class)
-            ->add('dateDeNaissance', BirthdayType::class, array(
-            'format' => 'dd-MM-yyyy',
-            ))
-            ->add('Email', EmailType::class)
             ->add('billet', ChoiceType::class, array(
                 'choices' => array(
                     'Journée' => true,
                     'Demi-Journée' => false)))
             ->add('quantite', IntegerType::class, array(
                 'data' => '0'))
-            ->add('tarifReduit', CheckboxType::class, array('required' => false))
-            ->add('pays', CountryType::class)
+            //->add('tarifReduit', CheckboxType::class, array('required' => false))
+            ->add('Email', EmailType::class)
+
+            ->add('coordonnees', CollectionType::class, array(
+            'entry_type'   => CoordonneesType::class,
+            'allow_add'    => true,
+            'allow_delete' => true
+            ))
             ->add('Envoyer', SubmitType::class);
     }
     
