@@ -30,6 +30,7 @@ class ReservationType extends AbstractType
         $builder
             ->add('date', DateType::class, [
                  'widget' => 'single_text',
+                 'input' => 'datetime',
                  'format' => 'dd/MM/yyyy'
 
             ])

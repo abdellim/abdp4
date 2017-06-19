@@ -13,38 +13,53 @@ class HomeController extends Controller
     public function indexAction(Request $request)
     {
         $reservation = new Reservation();
-        $form = $this->get('form.factory')->create(ReservationType::class, $reservation);
+       // $form = $this->get('form.factory')->create(ReservationType::class, $reservation);
         // Si la requête est en POST
-        if ($request->isMethod('POST')) {
+        /*if ($request->isMethod('POST')) {
           $form->handleRequest($request);
           // On vérifie que les valeurs entrées sont correctes
           if ($form->isValid()) {        
-            // Création d'une première candidature
-            //$coordonnees = new Coordonnees();
-
-            // On lie les candidatures à l'annonce
-            
-            //$coordonnees->setReservation($reservation);
-
-            // On récupère l'EntityManager
             $em = $this->getDoctrine()->getManager();
-
-            // Étape 1 : On « persiste » l'entité
             $em->persist($reservation);
-
-            // Étape 1 ter : pour cette relation pas de cascade lorsqu'on persiste Advert, car la relation est
-            // définie dans l'entité Application et non Advert. On doit donc tout persister à la main ici.
-            //$em->persist($coordonnees);
-
-
-            // Étape 2 : On « flush » tout ce qui a été persisté avant
             $em->flush();
           }
-        }
+        }*/
+    // Création de l'entité Advert
+
+   
+    $reservation->setbillet('1');
+    $reservation->setEmail("luimem@gmail.com");
+    $reservation->setQuantite("5");
+
+    // Création d'une première candidature
+    $coordonnees = new Coordonnees();
+    $coordonnees->setTarifReduit('0');
+    $coordonnees->setNom("Moi mo");
+    $coordonnees->setPrenom("il");
+    $coordonnees->setDateDeNaissance('1985/12/06');
+    $coordonnees->setPays("fr");
+    $coordonnees->setCodeReservation("fddddddr");
+    //$coordonnees->setDate('2017-06-07 00:00:00');
 
 
 
+    // On lie les candidatures à l'annonce
+    $coordonnees->setReservation($reservation);
+    $coordonnees->setReservation($reservation);
 
+    // On récupère l'EntityManager
+    $em = $this->getDoctrine()->getManager();
+
+    // Étape 1 : On « persiste » l'entité
+    $em->persist($reservation);
+
+    // Étape 1 ter : pour cette relation pas de cascade lorsqu'on persiste Advert, car la relation est
+    // définie dans l'entité Application et non Advert. On doit donc tout persister à la main ici.
+    $em->persist($coordonnees);
+
+
+    // Étape 2 : On « flush » tout ce qui a été persisté avant
+    $em->flush();
 
    
         //$em->flush();
@@ -66,7 +81,7 @@ class HomeController extends Controller
         
         return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
         
-       'form' => $form->createView(),
+       // 'form' => $form->createView(),
         'reservation' =>$reservation,
         //'prix' => $prix,
         

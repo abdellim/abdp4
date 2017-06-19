@@ -15,10 +15,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Coordonnees
 {
     /**
-    * @ORM\ManyToOne(targetEntity="Morad\BilleterieBundle\Entity\Reservation")
+    * @ORM\ManyToOne(targetEntity="Morad\BilleterieBundle\Entity\Reservation", cascade={"persist"})
     * @ORM\JoinColumn(nullable=false)
     */
     private $reservation;
+
     /**
      * @var int
      *
@@ -29,12 +30,7 @@ class Coordonnees
     private $id;
     
     
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date", type="datetime")
-     */
-    private $date;
+
     
     /**
      * @var string
@@ -55,7 +51,7 @@ class Coordonnees
     /**
      * @var BirthdayType
      *
-     * @ORM\Column(name="dateDeNaissance", type="datetime")
+     * @ORM\Column(name="dateDeNaissance", type="date")
      */
     private $dateDeNaissance;
 
@@ -169,7 +165,7 @@ class Coordonnees
     /**
      * Set dateDeNaissance
      *
-     * @param \DateTime $dateDeNaissance
+     * @param \Date $dateDeNaissance
      *
      * @return Coordonnees
      */
@@ -302,6 +298,8 @@ class Coordonnees
     {
         return $this->date;
     }
+
+
 
     /**
      * Set reservation

@@ -12,6 +12,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Reservation
 {
+
+    /**
+     * @var coordonnees
+     * @Assert\Valid()
+     * 
+    */
+    private $coordonnees; // Notez le « s », une reservation est liée à plusieurs coordonnees
+
     /**
      * @var int
      *
@@ -19,8 +27,6 @@ class Reservation
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-
-    private $coordonnees;
     
     private $id;
 
@@ -170,13 +176,34 @@ class Reservation
     }
 
 
+    /**
+     * Add coordonnee
+     *
+     * @param \Morad\BilleterieBundle\Entity\Coordonnees $coordonnee
+     *
+     * @return Reservation
+     */
+    public function addCoordonnee(\Morad\BilleterieBundle\Entity\Coordonnees $coordonnee)
+    {
+        $this->coordonnees[] = $coordonnee;
 
+        return $this;
+    }
 
+    /**
+     * Remove coordonnee
+     *
+     * @param \Morad\BilleterieBundle\Entity\Coordonnees $coordonnee
+     */
+    public function removeCoordonnee(\Morad\BilleterieBundle\Entity\Coordonnees $coordonnee)
+    {
+        $this->coordonnees->removeElement($coordonnee);
+    }
 
     /**
      * Get coordonnees
      *
-     * @return Reservation
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCoordonnees()
     {
