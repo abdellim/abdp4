@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Coordonnees
 {
     /**
-    * @ORM\ManyToOne(targetEntity="Morad\BilleterieBundle\Entity\Reservation")
+    * @ORM\ManyToOne(targetEntity="Morad\BilleterieBundle\Entity\Reservation", cascade={"persist"})
     * @ORM\JoinColumn(nullable=false)
     */
     private $reservation;

@@ -31,21 +31,10 @@
     </nav>
     <div class="container-fluid">
  
-      <div class="col-md-8" style="opacity: 0.85">
-        <div class="jumbotron">
-          {% block titre %}
-          {% endblock %}
+      
           {{ include("MoradBilleterieBundle:Home:contentFormCoordonnees.html.twig") }}
+ 
 
-        </div>
-      </div>
-      <div class="col-md-4" style="opacity: 0.85">
-        <div class="jumbotron">
-          {% block prix %}
-          <h3>Tarifs</h3>
-          {% endblock %}    
-        </div>
-      </div>
     </div>
   </body>
   <footer class="footer">

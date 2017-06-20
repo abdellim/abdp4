@@ -14,40 +14,19 @@ class HomeController extends Controller
     {
         $reservation = new Reservation();
         $form = $this->get('form.factory')->create(ReservationType::class, $reservation);
-        // Si la requête est en POST
+        
         if ($request->isMethod('POST')) {
           $form->handleRequest($request);
-          // On vérifie que les valeurs entrées sont correctes
-          if ($form->isValid()) {        
-            // Création d'une première candidature
-            //$coordonnees = new Coordonnees();
-
-            // On lie les candidatures à l'annonce
-            
-            //$coordonnees->setReservation($reservation);
-
-            // On récupère l'EntityManager
-            $em = $this->getDoctrine()->getManager();
-
-            // Étape 1 : On « persiste » l'entité
-            $em->persist($reservation);
-
-            // Étape 1 ter : pour cette relation pas de cascade lorsqu'on persiste Advert, car la relation est
-            // définie dans l'entité Application et non Advert. On doit donc tout persister à la main ici.
-            //$em->persist($coordonnees);
-
-
-            // Étape 2 : On « flush » tout ce qui a été persisté avant
-            $em->flush();
-          }
+            if ($form->isValid()) {
+                // On récupère l'EntityManager
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($reservation);
+                $em->flush($reservation);
+                $id = $reservation->getId();
+                return $this->redirectToRoute('morad_billeterie_coordonnes', array('id' => $id));
+            }
         }
-
-
-
-
-
-   
-        //$em->flush();
+        
        /* $em = $this->getDoctrine()->getManager();
         $date = $reservation->getDate();
         $quantite = $reservation->getQuantite();
@@ -57,26 +36,93 @@ class HomeController extends Controller
         if ($nbreDeBilletParDate > 5) {
             $request->getSession()->getFlashBag()->add('info', 'La quantité maximum à été atteinte pour cette date.');
         }
-        //Affiche le message si la case tarif réduit est cocher
-        $tarifReduit = $reservation->getTarifReduit();
-        if ($tarifReduit == true) {
-            $prix = $prix/2;
-            $request->getSession()->getFlashBag()->add('info', 'Tarif réduit sur présentation de justificatifs à l\'entrée du musée !');
-        }*/
-        
+*/  
         return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
-        
        'form' => $form->createView(),
-        'reservation' =>$reservation,
+
         //'prix' => $prix,
-        
         ));
     }
 
-    public function coordonnesAction(Request $request) {
 
-    
-        return $this->render('MoradBilleterieBundle:Home:Coordonnees.html.twig');    
- 
+    public function coordonneesAction($id, Request $request) 
+    {
+        $em = $this->getDoctrine()->getManager();
+        // On récupère la reservation $id
+        $reservation = $em->getRepository('MoradBilleterieBundle:Reservation')->find($id);
+        $date = $reservation->getDate();
+        $journee = $reservation->getbillet();
+        $quantite = $reservation->getQuantite();
+
+        //Boucle pour créer x objet coordonnees en fonction de la quantité
+        for ($i=0; $i < $quantite ; $i++) { 
+            $coordonnees = new Coordonnees();
+            $formi = $this->get('form.factory')->create(CoordonneesType::class, $coordonnees);
+        }
+
+
+
+
+        if ($request->isMethod('POST')) {
+            $formi->handleRequest($request);
+            if ($formi->isValid()) {
+                // On récupère l'EntityManager
+                $em = $this->getDoctrine()->getManager();
+                // On lie coordonnees et reservation
+                $coordonnees->setReservation($reservation);
+                $em->persist($coordonnees);
+                $tableauReservation[] = $coordonnees;
+                $em->flush($coordonnees);
+            }    
+        }
+
+        
+       $tableauReservation[] = $coordonnees;
+
+
+
+        //Calcul de l'age
+        $datetime2 = $coordonnees->getDateDeNaissance();
+        if (is_null($datetime2)) {
+            $datetime1 = $date;
+            $datetime2 = $coordonnees->getDateDeNaissance();
+            $age = '';
+        } else {
+            $datetime1 = $date;
+            $datetime2 = $coordonnees->getDateDeNaissance();
+            $age = $datetime1->diff($datetime2, true)->y;        
+        }
+
+        // Calcul du prix en fonction de l'age
+        $prix = 0;
+
+        if ($age >= 12) {
+            $prix = 16;
+        }
+        if ($age >= 4 && $age < 12) {
+            $prix = 8;
+        }
+        if ($age > 60) {
+            $prix = 12;
+        }
+        if ($journee == 0) {
+           $prix = $prix/2;
+        }
+        if ($prix != 0) {
+            $prix = $prix*$quantite;
+        }
+        $tarifReduit = $coordonnees->getTarifReduit();
+        if ($tarifReduit == true) {
+            $prix = $prix/2;
+        }
+
+        return $this->render('MoradBilleterieBundle:Home:Coordonnees.html.twig', array(
+        'formi' => $formi->createView(),
+        'id' => $id,
+        'reservation' => $reservation,
+        'quantite' => $quantite,
+        'prix' => $prix,
+        'tableauReservation' => $tableauReservation,
+        ));
     }
 }

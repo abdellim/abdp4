@@ -3,5 +3,7 @@ morad_billeterie_homepage:
     defaults: { _controller: MoradBilleterieBundle:Home:index }
 
 morad_billeterie_coordonnes:
-    path:     /coordonnes
-    defaults : { _controller: MoradBilleterieBundle:Home:coordonnes }
+    path:     /coordonnees/{id}
+    defaults : { _controller: MoradBilleterieBundle:Home:coordonnees } 
+    requirements:
+      id: \d+
