@@ -33,7 +33,7 @@ class CoordonneesType extends AbstractType
             ->add('tarifReduit', CheckboxType::class, array('required' => false))
             ->add('pays', CountryType::class)
 
-            ->add('Envoyer', SubmitType::class);
+           
             ;
     }
     

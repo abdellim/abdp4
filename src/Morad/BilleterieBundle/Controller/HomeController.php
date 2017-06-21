@@ -4,6 +4,7 @@ use Morad\BilleterieBundle\Entity\Reservation;
 use Morad\BilleterieBundle\Entity\Coordonnees;
 use Morad\BilleterieBundle\Form\ReservationType;
 use Morad\BilleterieBundle\Form\CoordonneesType;
+use Morad\BilleterieBundle\Form\CoordonneesRelaiType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,8 +40,6 @@ class HomeController extends Controller
 */  
         return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
        'form' => $form->createView(),
-
-        //'prix' => $prix,
         ));
     }
 
@@ -53,43 +52,41 @@ class HomeController extends Controller
         $date = $reservation->getDate();
         $journee = $reservation->getbillet();
         $quantite = $reservation->getQuantite();
-
+        $dateD ='';
         //Boucle pour créer x objet coordonnees en fonction de la quantité
-        for ($i=0; $i < $quantite ; $i++) { 
-            $coordonnees = new Coordonnees();
-            $formi = $this->get('form.factory')->create(CoordonneesType::class, $coordonnees);
+        for ($i=0; $i < $quantite ; $i++) {
+            $data["coordonnees"][] = new Coordonnees();  
         }
-
-
-
+        $formi = $this->get('form.factory')->create(CoordonneesRelaiType::class, $data);
 
         if ($request->isMethod('POST')) {
             $formi->handleRequest($request);
             if ($formi->isValid()) {
                 // On récupère l'EntityManager
-                $em = $this->getDoctrine()->getManager();
-                // On lie coordonnees et reservation
-                $coordonnees->setReservation($reservation);
-                $em->persist($coordonnees);
-                $tableauReservation[] = $coordonnees;
-                $em->flush($coordonnees);
-            }    
+                foreach ($data["coordonnees"] as $value){
+                    $em = $this->getDoctrine()->getManager();
+                    
+                   
+                    $em->persist($value);
+                    $date = $reservation->getDate();
+                    $dateD[] = $value->getDateDeNaissance();
+                    $value->setReservation($reservation);
+                    $em->flush($value);
+                }
+            }
         }
 
-        
-       $tableauReservation[] = $coordonnees;
 
 
-
-        //Calcul de l'age
-        $datetime2 = $coordonnees->getDateDeNaissance();
+      /*  //Calcul de l'age
+        $datetime2 = $data->getDateDeNaissance();
         if (is_null($datetime2)) {
             $datetime1 = $date;
-            $datetime2 = $coordonnees->getDateDeNaissance();
+            $datetime2 = $data->getDateDeNaissance();
             $age = '';
         } else {
             $datetime1 = $date;
-            $datetime2 = $coordonnees->getDateDeNaissance();
+            $datetime2 = $data->getDateDeNaissance();
             $age = $datetime1->diff($datetime2, true)->y;        
         }
 
@@ -111,18 +108,22 @@ class HomeController extends Controller
         if ($prix != 0) {
             $prix = $prix*$quantite;
         }
-        $tarifReduit = $coordonnees->getTarifReduit();
+        $tarifReduit = $data->getTarifReduit();
         if ($tarifReduit == true) {
             $prix = $prix/2;
-        }
+        }*/
 
         return $this->render('MoradBilleterieBundle:Home:Coordonnees.html.twig', array(
         'formi' => $formi->createView(),
         'id' => $id,
         'reservation' => $reservation,
-        'quantite' => $quantite,
-        'prix' => $prix,
-        'tableauReservation' => $tableauReservation,
+        //'quantite' => $quantite,
+       // 'prix' => $prix,
+      //  'tableauReservation' => $tableauReservation,
+        'data' => $data,
+        'dateD' => $dateD,
+        'date' => $date,
+        //'age' => $age,
         ));
     }
 }

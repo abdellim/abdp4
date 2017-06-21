@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
+
 /**
  * Coordonnees
  *
@@ -15,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Coordonnees
 {
     /**
-    * @ORM\ManyToOne(targetEntity="Morad\BilleterieBundle\Entity\Reservation", cascade={"persist"})
+    * @ORM\ManyToOne(targetEntity="Reservation", cascade={"remove"})
     * @ORM\JoinColumn(nullable=false)
     */
     private $reservation;
@@ -235,44 +236,11 @@ class Coordonnees
     }
 
 
-    public function getAge()
-    {
-        $datetime2 = $this->getDateDeNaissance();
-        if (is_null($datetime2)) {
-            $datetime1 = $reservation->getDate();
-            $datetime2 = $this->getDateDeNaissance();
-            $age = '';
-        } else {
-            $datetime1 = $reservation->getDate();
-            $datetime2 = $this->getDateDeNaissance();
-            $age = $datetime1->diff($datetime2, true)->y;        
-        }
-        return $age;
-    }
+
 
     public function getPrix()
     {
-        $prix = 0;
-        $age = $this->getAge();
-        $journee = $this->getbillet();
-        $quantite = $reservation->getQuantite();
 
-        if ($age >= 12) {
-            $prix = 16;
-        }
-        if ($age > 4 && $age < 12) {
-            $prix = 8;
-        }
-        if ($age > 60) {
-            $prix = 12;
-        }
-        if ($journee == 0) {
-           $prix = $prix/2;
-        }
-        if ($prix != 0) {
-            $prix = $prix*$quantite;
-        }
-        return $prix;
     }
 
     /**
@@ -304,11 +272,11 @@ class Coordonnees
     /**
      * Set reservation
      *
-     * @param \Morad\BilleterieBundle\Entity\Reservation $reservation
+     * @param \Reservation $reservation
      *
      * @return Coordonnees
      */
-    public function setReservation(\Morad\BilleterieBundle\Entity\Reservation $reservation)
+    public function setReservation(Reservation $reservation)
     {
         $this->reservation = $reservation;
 
@@ -318,7 +286,7 @@ class Coordonnees
     /**
      * Get reservation
      *
-     * @return \Morad\BilleterieBundle\Entity\Reservation
+     * @return \Reservation
      */
     public function getReservation()
     {
