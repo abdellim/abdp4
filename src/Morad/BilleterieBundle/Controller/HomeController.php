@@ -49,10 +49,14 @@ class HomeController extends Controller
         $em = $this->getDoctrine()->getManager();
         // On récupère la reservation $id
         $reservation = $em->getRepository('MoradBilleterieBundle:Reservation')->find($id);
-        $date = $reservation->getDate();
+        $date = '';
         $journee = $reservation->getbillet();
         $quantite = $reservation->getQuantite();
-        $dateD ='';
+        $id = $reservation->getID();
+        $price = 0;
+        $prix = 0;
+        $age = '';
+
         //Boucle pour créer x objet coordonnees en fonction de la quantité
         for ($i=0; $i < $quantite ; $i++) {
             $data["coordonnees"][] = new Coordonnees();  
@@ -62,68 +66,42 @@ class HomeController extends Controller
         if ($request->isMethod('POST')) {
             $formi->handleRequest($request);
             if ($formi->isValid()) {
-                // On récupère l'EntityManager
+                $prix = array();
                 foreach ($data["coordonnees"] as $value){
-                    $em = $this->getDoctrine()->getManager();
-                    
-                   
-                    $em->persist($value);
+                    //Calcul de l'age
                     $date = $reservation->getDate();
-                    $dateD[] = $value->getDateDeNaissance();
+                    $datetime2 = $value->getDateDeNaissance();
+                    if (is_null($datetime2)) {
+                        $datetime1 = $date;
+                        $datetime2 = $value->getDateDeNaissance();
+                        $age = '';
+                    } else {
+                        $datetime1 = $date;
+                        $datetime2 = $value->getDateDeNaissance();
+                        $age = $datetime1->diff($datetime2, true)->y;        
+                    }
+                    //Calcul du prix
+                    $prixi = $value->getPrix($age, $journee);
+                    //Ajout au tableau le montant de chaque billet
+                    $prix[] = $prixi;
+                    //Calcul de prix total
+                    $price = array_sum($prix);
+
+                    $em->persist($value);
                     $value->setReservation($reservation);
                     $em->flush($value);
                 }
             }
         }
 
-
-
-      /*  //Calcul de l'age
-        $datetime2 = $data->getDateDeNaissance();
-        if (is_null($datetime2)) {
-            $datetime1 = $date;
-            $datetime2 = $data->getDateDeNaissance();
-            $age = '';
-        } else {
-            $datetime1 = $date;
-            $datetime2 = $data->getDateDeNaissance();
-            $age = $datetime1->diff($datetime2, true)->y;        
-        }
-
-        // Calcul du prix en fonction de l'age
-        $prix = 0;
-
-        if ($age >= 12) {
-            $prix = 16;
-        }
-        if ($age >= 4 && $age < 12) {
-            $prix = 8;
-        }
-        if ($age > 60) {
-            $prix = 12;
-        }
-        if ($journee == 0) {
-           $prix = $prix/2;
-        }
-        if ($prix != 0) {
-            $prix = $prix*$quantite;
-        }
-        $tarifReduit = $data->getTarifReduit();
-        if ($tarifReduit == true) {
-            $prix = $prix/2;
-        }*/
-
         return $this->render('MoradBilleterieBundle:Home:Coordonnees.html.twig', array(
         'formi' => $formi->createView(),
         'id' => $id,
         'reservation' => $reservation,
-        //'quantite' => $quantite,
-       // 'prix' => $prix,
-      //  'tableauReservation' => $tableauReservation,
         'data' => $data,
-        'dateD' => $dateD,
         'date' => $date,
-        //'age' => $age,
+        'age' => $age,
+        'price' => $price,
         ));
     }
 }

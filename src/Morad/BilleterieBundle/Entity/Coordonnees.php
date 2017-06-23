@@ -15,10 +15,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Coordonnees
 {
-    /**
-    * @ORM\ManyToOne(targetEntity="Reservation")
-    * @ORM\JoinColumn(nullable=false)
-    */
+
+      /**
+
+   * @ORM\ManyToOne(targetEntity="Morad\BilleterieBundle\Entity\Reservation", inversedBy="coordonnees")
+
+   * @ORM\JoinColumn(nullable=false)
+  
+
+   */
     private $reservation;
 
     /**
@@ -30,7 +35,7 @@ class Coordonnees
      */
     private $id;
     
-    
+    private $prix;
 
     
     /**
@@ -238,9 +243,27 @@ class Coordonnees
 
 
 
-    public function getPrix()
+    public function getPrix($age, $journee)
     {
-
+        $tarifReduit = $this->getTarifReduit();
+        if ($age >= 12) {
+            $prix = 16;
+        }
+        if ($age >= 4 && $age < 12) {
+            $prix = 8;
+            $tarifReduit = null; //Si la case est cocher le meilleur tarif s'applique
+        }
+        if ($age >= 60) {
+            $prix = 12;
+        }
+        
+        if ($tarifReduit == true) {
+            $prix = 10;
+        }
+        if ($journee == 0) {
+           $prix = $prix/2;
+        }
+        return $prix;
     }
 
     /**
@@ -269,14 +292,15 @@ class Coordonnees
 
 
 
+
     /**
      * Set reservation
      *
-     * @param \Reservation $reservation
+     * @param \Morad\BilleterieBundle\Entity\Reservation $reservation
      *
      * @return Coordonnees
      */
-    public function setReservation(Reservation $reservation)
+    public function setReservation(\Morad\BilleterieBundle\Entity\Reservation $reservation)
     {
         $this->reservation = $reservation;
 
@@ -286,7 +310,7 @@ class Coordonnees
     /**
      * Get reservation
      *
-     * @return \Reservation
+     * @return \Morad\BilleterieBundle\Entity\Reservation
      */
     public function getReservation()
     {

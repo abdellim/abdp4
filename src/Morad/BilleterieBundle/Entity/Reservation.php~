@@ -13,7 +13,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Reservation
 {
 
+  /**
 
+   * @ORM\OneToMany(targetEntity="Morad\BilleterieBundle\Entity\Reservation", mappedBy="coordonnees")
+
+   */
+    private $coordonnees;
 
     /**
      * @var int
@@ -171,4 +176,40 @@ class Reservation
     }
 
 
+
+
+
+    /**
+     * Add coordonnee
+     *
+     * @param \Morad\BilleterieBundle\Entity\Reservation $coordonnee
+     *
+     * @return Reservation
+     */
+    public function addCoordonnee(\Morad\BilleterieBundle\Entity\Reservation $coordonnee)
+    {
+        $this->coordonnees[] = $coordonnee;
+
+        return $this;
+    }
+
+    /**
+     * Remove coordonnee
+     *
+     * @param \Morad\BilleterieBundle\Entity\Reservation $coordonnee
+     */
+    public function removeCoordonnee(\Morad\BilleterieBundle\Entity\Reservation $coordonnee)
+    {
+        $this->coordonnees->removeElement($coordonnee);
+    }
+
+    /**
+     * Get coordonnees
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoordonnees()
+    {
+        return $this->coordonnees;
+    }
 }
