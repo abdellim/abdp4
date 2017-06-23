@@ -5,24 +5,29 @@
 <div class="well">
   {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
 
-
     {# Les erreurs générales du formulaire. #}
 
-    {{ form_errors(form) }}
+  {{ form_errors(form) }}
 
+  {{ form_label(form.date, "Date de réservation") }}
 
-    {{ form_label(form.date, "Date de réservation") }}
-    {{ form_widget(form.date,{ 'id': 'datepicker'}) }}
+  {{ form_widget(form.date,{ 'id': 'datepicker'}) }}
 
-    {{ form_row(form.quantite) }}
-    {{ form_row(form.Email) }}
+  {{ form_row(form.quantite) }}
+
+  {{ form_row(form.Email) }}
     
-    {{ form_row(form.billet, {'attr': {'class': 'billet'}}) }}
+  {{ form_row(form.billet, {'attr': {'class': 'billet'}}) }}
 
+  {% for message in app.session.flashbag.get('quantite') %}
+ 
+      <p class="alert alert-danger" style="font-size: 14px;"><U>Attention:</U> {{ message }}</p>
+
+  {% endfor %}
 
   {{ form_widget(form.Envoyer, {'attr': {'class': 'btn btn-primary'}}) }}
 
-   {{ form_end(form) }}
+  {{ form_end(form) }}
 </div>
 
 <script>

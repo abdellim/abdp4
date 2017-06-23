@@ -72,7 +72,7 @@ class Coordonnees
     /**
      * @var string
      *
-     * @ORM\Column(name="codeReservation", type="string", length=255, nullable=true)
+     * @ORM\Column(name="codeReservation", type="string", length=255, nullable=false)
      */
     private $codeReservation;
 
@@ -251,7 +251,7 @@ class Coordonnees
         }
         if ($age >= 4 && $age < 12) {
             $prix = 8;
-            //$tarifReduit = null; //Si la case est cocher le meilleur tarif s'applique
+            $tarifReduit = null; //Si la case est cocher le meilleur tarif s'applique
         }
         if ($age >= 60) {
             $prix = 12;
@@ -263,7 +263,7 @@ class Coordonnees
         if ($journee == 0) {
            $prix = $prix/2;
         }
-        return $this->prix;
+        return $prix;
     }
 
     /**

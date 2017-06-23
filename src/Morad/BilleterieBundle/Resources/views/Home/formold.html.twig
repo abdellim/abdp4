@@ -1,7 +1,0 @@
-{{ form(form) }}
-
-{% for message in app.session.flashbag.get('info') %}
-	<div class="alert alert-danger">
-		<p>Attention : {{ message }}</p>
-	</div>
-{% endfor %}

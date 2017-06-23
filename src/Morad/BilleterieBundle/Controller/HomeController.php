@@ -22,22 +22,32 @@ class HomeController extends Controller
                 // On récupère l'EntityManager
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($reservation);
+
+                //-------- Verification de la disponibilité en fonction de la date --------//
+                $date = $reservation->getDate();
+                $quantite = $reservation->getQuantite();
+                $nbreDeBilletParDate = $em->getRepository('MoradBilleterieBundle:Reservation')->findByQuantiteAndDate($date);
+
+                $capactiteMusee = 7;
+                $placeDispo = $capactiteMusee - $nbreDeBilletParDate;
+                if ($placeDispo < 0) {
+                    $placeDispo = 0;
+                }
+                
+                if ($nbreDeBilletParDate > $capactiteMusee) {
+                    $request->getSession()->getFlashBag()->add('quantite', "La quantité maximum à été atteinte pour cette date. Il reste $placeDispo place(s) pour cette date.");
+                    return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
+                   'form' => $form->createView(),
+                    ));
+                }
+                //-------- Fin Verification Quantité / Date --------//
+
                 $em->flush($reservation);
                 $id = $reservation->getId();
                 return $this->redirectToRoute('morad_billeterie_coordonnes', array('id' => $id));
             }
         }
         
-       /* $em = $this->getDoctrine()->getManager();
-        $date = $reservation->getDate();
-        $quantite = $reservation->getQuantite();
-        $nbreDeBilletParDate = $em->getRepository('MoradBilleterieBundle:Reservation')->findByQuantiteAndDate($date);
-        $prix = $reservation->getPrix();
-        //Verification de la disponibilité en fonction de la date
-        if ($nbreDeBilletParDate > 5) {
-            $request->getSession()->getFlashBag()->add('info', 'La quantité maximum à été atteinte pour cette date.');
-        }
-*/  
         return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
        'form' => $form->createView(),
         ));
@@ -85,6 +95,9 @@ class HomeController extends Controller
                     //Ajout au tableau le montant de chaque billet
                     $prix[] = $prixi;
 
+                    //Génération d'un token / billet
+                    $token = bin2hex(random_bytes(10));
+                    $value->setCodeReservation($token);
 
                     $em->persist($value);
                     $value->setReservation($reservation);
