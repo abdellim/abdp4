@@ -84,24 +84,25 @@ class HomeController extends Controller
                     $prixi = $value->getPrix($age, $journee);
                     //Ajout au tableau le montant de chaque billet
                     $prix[] = $prixi;
-                    //Calcul de prix total
-                    $price = array_sum($prix);
+
 
                     $em->persist($value);
                     $value->setReservation($reservation);
                     $em->flush($value);
                 }
+                //Calcul de prix total
+                $price = array_sum($prix);
             }
         }
 
         return $this->render('MoradBilleterieBundle:Home:Coordonnees.html.twig', array(
-        'formi' => $formi->createView(),
-        'id' => $id,
-        'reservation' => $reservation,
-        'data' => $data,
-        'date' => $date,
-        'age' => $age,
-        'price' => $price,
+            'formi' => $formi->createView(),
+            'id' => $id,
+            'reservation' => $reservation,
+            'data' => $data,
+            'date' => $date,
+            'age' => $age,
+            'price' => $price,
         ));
     }
 }
