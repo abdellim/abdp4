@@ -13,9 +13,22 @@ class HomeController extends Controller
 {
     public function indexAction(Request $request)
     {
+
         $reservation = new Reservation();
         $form = $this->get('form.factory')->create(ReservationType::class, $reservation);
-        
+        //$em = $this->getDoctrine()->getManager();
+        $dateD = $reservation->getDate()->format('d/m/y');
+        $date = $reservation->check_dimanche($dateD);
+        //if( date("w", $date ) == 6 )  return 1;
+        if ($date == 1) {
+            $request->getSession()->getFlashBag()->add('reservationJf', " jkl");
+            return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
+            'form' => $form->createView(),
+            'date' => $date,
+            ));
+        }
+
+
         if ($request->isMethod('POST')) {
           $form->handleRequest($request);
             if ($form->isValid()) {
@@ -23,33 +36,31 @@ class HomeController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($reservation);
 
-                //-------- Verification de la disponibilité en fonction de la date --------//
+                //----- Verification de la disponibilité en fonction de la date --------//
                 $date = $reservation->getDate();
                 $quantite = $reservation->getQuantite();
                 $nbreDeBilletParDate = $em->getRepository('MoradBilleterieBundle:Reservation')->findByQuantiteAndDate($date);
 
                 $capactiteMusee = 7;
                 $placeDispo = $capactiteMusee - $nbreDeBilletParDate;
-                if ($placeDispo < 0) {
-                    $placeDispo = 0;
-                }
-                
-                if ($nbreDeBilletParDate > $capactiteMusee) {
-                    $request->getSession()->getFlashBag()->add('quantite', "La quantité maximum à été atteinte pour cette date. Il reste $placeDispo place(s) pour cette date.");
+                if ($quantite > $placeDispo) {
+                    $request->getSession()->getFlashBag()->add('quantite', "La quantité maximum à été atteinte pour cette date. Il ne reste que $placeDispo place(s) pour cette date.");
                     return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
                    'form' => $form->createView(),
                     ));
                 }
-                //-------- Fin Verification Quantité / Date --------//
-
-                $em->flush($reservation);
-                $id = $reservation->getId();
-                return $this->redirectToRoute('morad_billeterie_coordonnes', array('id' => $id));
+                else {
+                    $em->flush($reservation);
+                    $id = $reservation->getId();
+                    return $this->redirectToRoute('morad_billeterie_coordonnes', array('id' => $id));
+                }
+                //-------- Fin Verification Quantité / Date --------// 
             }
         }
         
         return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
        'form' => $form->createView(),
+       'date' => $date,
         ));
     }
 

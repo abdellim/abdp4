@@ -36,10 +36,9 @@ class ReservationType extends AbstractType
                     'Journée' => true,
                     'Demi-Journée' => false)))
             ->add('quantite', IntegerType::class, array(
-                'data' => '0'))
+                'data' => '1'))
             //->add('tarifReduit', CheckboxType::class, array('required' => false))
             ->add('Email', EmailType::class)
-
             ->add('Envoyer', SubmitType::class);
     }
     

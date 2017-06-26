@@ -19,8 +19,13 @@
     
   {{ form_row(form.billet, {'attr': {'class': 'billet'}}) }}
 
+  {% for message in app.session.flashbag.get('reservationJf') %}
+  <script>alert("La réservation en ligne n'est possible que du Lundi au Sammedi (hors jours fériées), merci de votre compréhension.")</script>
+  {% endfor %}
+
   {% for message in app.session.flashbag.get('quantite') %}
- 
+       
+  
       <p class="alert alert-danger" style="font-size: 14px;"><U>Attention:</U> {{ message }}</p>
 
   {% endfor %}
