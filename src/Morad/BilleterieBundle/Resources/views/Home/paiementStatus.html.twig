@@ -1,0 +1,6 @@
+            {% for message in app.session.flashbag.get('success') %}
+  <p>Merci pour votre réservation, votre réservation vous a été envoyé par mail.</p>
+  {% endfor %}
+{% for message in app.session.flashbag.get('reservationJf') %}
+<p>Désoler le réglement à échoué veuiller recommencer l'opération</p>
+  {% endfor %}

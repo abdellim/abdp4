@@ -8,6 +8,7 @@ use Morad\BilleterieBundle\Form\CoordonneesRelaiType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class HomeController extends Controller
 {
@@ -16,15 +17,14 @@ class HomeController extends Controller
 
         $reservation = new Reservation();
         $form = $this->get('form.factory')->create(ReservationType::class, $reservation);
-        //$em = $this->getDoctrine()->getManager();
-        $dateD = $reservation->getDate()->format('d/m/y');
-        $date = $reservation->check_dimanche($dateD);
-        //if( date("w", $date ) == 6 )  return 1;
-        if ($date == 1) {
+        $date = $reservation->getDate()->format('d/m/Y');
+        $jourFerie = $reservation->isNotWorkable(time());
+        if ($date == 1 || $jourFerie == true) {
             $request->getSession()->getFlashBag()->add('reservationJf', " jkl");
             return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
             'form' => $form->createView(),
             'date' => $date,
+            'jourFerie' => $jourFerie,
             ));
         }
 
@@ -47,6 +47,7 @@ class HomeController extends Controller
                     $request->getSession()->getFlashBag()->add('quantite', "La quantité maximum à été atteinte pour cette date. Il ne reste que $placeDispo place(s) pour cette date.");
                     return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
                    'form' => $form->createView(),
+                   'jourFerie' => $jourFerie,
                     ));
                 }
                 else {
@@ -61,6 +62,7 @@ class HomeController extends Controller
         return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
        'form' => $form->createView(),
        'date' => $date,
+       'jourFerie' => $jourFerie,
         ));
     }
 
@@ -102,9 +104,9 @@ class HomeController extends Controller
                         $age = $datetime1->diff($datetime2, true)->y;        
                     }
                     //Calcul du prix
-                    $prixi = $value->getPrix($age, $journee);
+                    $prixCalcul = $value->getPrix($age, $journee);
                     //Ajout au tableau le montant de chaque billet
-                    $prix[] = $prixi;
+                    $prix[] = $prixCalcul;
 
                     //Génération d'un token / billet
                     $token = bin2hex(random_bytes(10));
@@ -114,8 +116,19 @@ class HomeController extends Controller
                     $value->setReservation($reservation);
                     $em->flush($value);
                 }
-                //Calcul de prix total
+                //Calcul de prix total et paiement
+
                 $price = array_sum($prix);
+                $em = $this->getDoctrine()->getManager();
+                // On récupère la reservation $id pour ajouter le prix total à la reservation
+                $reservation = $em->getRepository('MoradBilleterieBundle:Reservation')->find($id);
+                $prixTotal = $reservation->setPrix($price);
+                $em->persist($prixTotal);
+                $em->flush($prixTotal);
+
+                //On affiche la vue paiement
+                return $this->redirectToRoute('morad_billeterie_checkout', array('id' => $id));
+                
             }
         }
 
@@ -129,4 +142,59 @@ class HomeController extends Controller
             'price' => $price,
         ));
     }
+
+
+     /**
+
+     * @Route(
+
+     *     "/order_checkout",
+
+     *     name="order_checkout",
+
+     *     methods="POST"
+
+     * )
+
+     */
+    public function checkoutAction($id)
+    {
+        //on recupere la reservation
+        $em = $this->getDoctrine()->getManager();
+        $reservation = $em->getRepository('MoradBilleterieBundle:Reservation')->find($id);
+        $price = $reservation->getPrix();
+        
+        \Stripe\Stripe::setApiKey("sk_test_tKfLZqRevKvdjIvvIBTwYlBw");
+
+        // Get the credit card details submitted by the form
+        $token = $_POST['stripeToken'];
+
+        // Create a charge: this will charge the user's card
+        try {
+            $charge = \Stripe\Charge::create(array(
+                "amount" => $price, // Amount in cents
+                "currency" => "eur",
+                "source" => $token,
+                "description" => "Paiement Stripe - OpenClassrooms Exemple"
+            ));
+            $this->addFlash("success","Bravo ça marche !");
+             return $this->render('MoradBilleterieBundle:Home:paiementStatus.html.twig');
+        } catch(\Stripe\Error\Card $e) {
+
+            $this->addFlash("error","Snif ça marche pas :(");
+             return $this->render('MoradBilleterieBundle:Home:paiementStatus.html.twig');
+            // The card has been declined
+        }
+        return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array(
+                    'price' =>$price
+                    ));
+    }    
+
+
+
+
+
+
+
+
 }

@@ -7,3 +7,9 @@ morad_billeterie_coordonnes:
     defaults : { _controller: MoradBilleterieBundle:Home:coordonnees } 
     requirements:
       id: \d+
+
+morad_billeterie_checkout:
+    path:     /order_checkout/{id}
+    defaults : { _controller: MoradBilleterieBundle:Home:checkout }
+    requirements:
+      id: \d+

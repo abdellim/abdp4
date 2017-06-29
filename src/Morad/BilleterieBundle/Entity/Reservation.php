@@ -30,6 +30,15 @@ class Reservation
     
     private $id;
 
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="prix", type="integer", nullable=true)
+     */
+    
+    private $prix;
+
     /**
      * @ORM\Column(name="billet", type="boolean")
      */
@@ -223,5 +232,68 @@ class Reservation
         else {
             return 0;
         }
+    }
+
+    public function isNotWorkable($date)
+    {
+        if ($date === null)
+        {
+            $date = time()->format('d-M-Y');
+        }
+
+        $date = date('d-m-Y'); 
+       // $date = '01/01/2017';
+        $date = strtotime($date);
+ 
+        $year = date('Y',$date);
+ 
+        $easterDate  = easter_date($year);
+        $easterDay   = date('j', $easterDate);
+        $easterMonth = date('n', $easterDate);
+        $easterYear   = date('Y', $easterDate);
+ 
+        $holidays = array(
+        // Dates fixes
+        mktime(0, 0, 0, 1,  1,  $year),  // 1er janvier
+        mktime(0, 0, 0, 5,  1,  $year),  // Fête du travail
+        mktime(0, 0, 0, 5,  8,  $year),  // Victoire des alliés
+        mktime(0, 0, 0, 7,  14, $year),  // Fête nationale
+        mktime(0, 0, 0, 8,  15, $year),  // Assomption
+        mktime(0, 0, 0, 11, 1,  $year),  // Toussaint
+        mktime(0, 0, 0, 11, 11, $year),  // Armistice
+        mktime(0, 0, 0, 12, 25, $year),  // Noel
+ 
+        // Dates variables
+        mktime(0, 0, 0, $easterMonth, $easterDay + 1,  $easterYear),
+        mktime(0, 0, 0, $easterMonth, $easterDay + 39, $easterYear),
+        mktime(0, 0, 0, $easterMonth, $easterDay + 50, $easterYear),
+        );
+ 
+    return in_array($date, $holidays);
+    }
+
+
+    /**
+     * Set prix
+     *
+     * @param integer $prix
+     *
+     * @return Reservation
+     */
+    public function setPrix($prix)
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    /**
+     * Get prix
+     *
+     * @return integer
+     */
+    public function getPrix()
+    {
+        return $this->prix;
     }
 }

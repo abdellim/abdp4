@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Coordonnees
 {
 
-      /**
+    /**
 
    * @ORM\ManyToOne(targetEntity="Morad\BilleterieBundle\Entity\Reservation", inversedBy="coordonnees")
 
