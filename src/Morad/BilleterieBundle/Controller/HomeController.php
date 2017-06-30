@@ -22,15 +22,15 @@ class HomeController extends Controller
         if ($date == 1 || $jourFerie == true) {
             $request->getSession()->getFlashBag()->add('reservationJf', " jkl");
             return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
-            'form' => $form->createView(),
-            'date' => $date,
-            'jourFerie' => $jourFerie,
+                'form' => $form->createView(),
+                'date' => $date,
+                'jourFerie' => $jourFerie,
             ));
         }
 
 
         if ($request->isMethod('POST')) {
-          $form->handleRequest($request);
+            $form->handleRequest($request);
             if ($form->isValid()) {
                 // On récupère l'EntityManager
                 $em = $this->getDoctrine()->getManager();
@@ -41,7 +41,7 @@ class HomeController extends Controller
                 $quantite = $reservation->getQuantite();
                 $nbreDeBilletParDate = $em->getRepository('MoradBilleterieBundle:Reservation')->findByQuantiteAndDate($date);
 
-                $capactiteMusee = 7;
+                $capactiteMusee = 1000;
                 $placeDispo = $capactiteMusee - $nbreDeBilletParDate;
                 if ($quantite > $placeDispo) {
                     $request->getSession()->getFlashBag()->add('quantite', "La quantité maximum à été atteinte pour cette date. Il ne reste que $placeDispo place(s) pour cette date.");
@@ -60,9 +60,9 @@ class HomeController extends Controller
         }
         
         return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
-       'form' => $form->createView(),
-       'date' => $date,
-       'jourFerie' => $jourFerie,
+           'form' => $form->createView(),
+           'date' => $date,
+           'jourFerie' => $jourFerie,
         ));
     }
 
@@ -127,7 +127,7 @@ class HomeController extends Controller
                 $em->flush($prixTotal);
 
                 //On affiche la vue paiement
-                return $this->redirectToRoute('morad_billeterie_checkout', array('id' => $id));
+                return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array('id' => $id, 'price' => $price,));
                 
             }
         }
@@ -143,12 +143,11 @@ class HomeController extends Controller
         ));
     }
 
-
-     /**
+ /**
 
      * @Route(
 
-     *     "/order_checkout",
+     *     "/checkout",
 
      *     name="order_checkout",
 
@@ -157,33 +156,43 @@ class HomeController extends Controller
      * )
 
      */
-    public function checkoutAction($id)
+    public function checkoutAction($id,Request $request)
     {
         //on recupere la reservation
         $em = $this->getDoctrine()->getManager();
         $reservation = $em->getRepository('MoradBilleterieBundle:Reservation')->find($id);
         $price = $reservation->getPrix();
-        
-        \Stripe\Stripe::setApiKey("sk_test_tKfLZqRevKvdjIvvIBTwYlBw");
+        $email = $reservation->getEmail();
+
+        $stripe = array(
+          "secret_key"      => "sk_test_SbnNanLBqWn9GHDIvWMYQVXo",
+          "publishable_key" => "pk_test_XBKuP2draWVwsYShfzBQK16G"
+        );
+        \Stripe\Stripe::setApiKey($stripe['secret_key']);
 
         // Get the credit card details submitted by the form
-        $token = $_POST['stripeToken'];
+        //$token = $_POST['stripeToken'];
+        $token = $request->request->get('stripeToken');
+
+        $customer = \Stripe\Customer::create(array(
+          'email' => $email,
+          'source'  => $token
+        ));
 
         // Create a charge: this will charge the user's card
         try {
             $charge = \Stripe\Charge::create(array(
-                "amount" => $price, // Amount in cents
+                "amount" => $price*100, // Amount in cents
                 "currency" => "eur",
-                "source" => $token,
-                "description" => "Paiement Stripe - OpenClassrooms Exemple"
+                "customer" => $customer->id,
+                "description" => "Paiement Musée du Louvre"
             ));
-            $this->addFlash("success","Bravo ça marche !");
-             return $this->render('MoradBilleterieBundle:Home:paiementStatus.html.twig');
+            $this->addFlash("paiementSuccess","");
+            return $this->redirectToRoute('morad_billeterie_homepage');
         } catch(\Stripe\Error\Card $e) {
 
-            $this->addFlash("error","Snif ça marche pas :(");
-             return $this->render('MoradBilleterieBundle:Home:paiementStatus.html.twig');
-            // The card has been declined
+            $this->addFlash("paiementError","");
+            return $this->redirectToRoute('morad_billeterie_homepage');
         }
         return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array(
                     'price' =>$price

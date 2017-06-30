@@ -43,6 +43,7 @@ class Coordonnees
      *
      * @ORM\Column(name="nom", type="string", length=255)
      * @Assert\Length(min=2, minMessage="Le nom doit comporter au minimum 2 caractères !")
+     * @Assert\Type("string")
      */
     private $nom;
 
@@ -51,6 +52,7 @@ class Coordonnees
      *
      * @ORM\Column(name="prenom", type="string", length=255)
      * @Assert\Length(min=2, minMessage="Le prénom doit comporter au minimum 2 caractères !")
+     * @Assert\Type("string")
      */
     private $prenom;
 

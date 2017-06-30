@@ -31,6 +31,12 @@
       </div><!-- /.container-fluid -->
     </nav>
     <div class="container-fluid">
+      {% for message in app.session.flashbag.get('paiementSuccess') %}
+        <script>alert("Merci pour votre réservation, votre réservation vous a été envoyé par mail.")</script>
+      {% endfor %}
+      {% for message in app.session.flashbag.get('paiementError') %}
+        <script>alert("La réservation a échoué, veuillez réessayer.")</script>
+      {% endfor %}
       <div class="col-md-6">
         <div class="jumbotron" style="background-color: #e6ffff; opacity: 0.85">
           {% block tarif %}
@@ -43,8 +49,8 @@
           {% endblock %}
           {{ include("MoradBilleterieBundle:Home:form.html.twig") }}
         </div>
-      </div>{{ dump(jourFerie)}}
-      
+      </div>
+
     </div>
   </body>
   <footer class="footer">

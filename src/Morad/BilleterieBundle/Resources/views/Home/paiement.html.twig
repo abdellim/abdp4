@@ -36,7 +36,7 @@
   <div class="" style="opacity: 0.85">
       <div class="well">
         
-            <div id="wrapper">
+        <div id="wrapper">
         <div id="container">
             <div id="welcome">
                 <h1><span>Réglement de votre réservation</span></h1>
@@ -47,11 +47,11 @@
                     <svg id="icon-status" width="1792" height="1792" viewBox="0 0 1792 1792" xmlns="<a href="<a href="URL_3WORG/2000/svg"><a href="<a href="URL_3WORG/2000/svg">URL_3WORG/2000/svg</a>"><a href="URL_3WORG/2000/svg">URL_3WORG.org/2000/svg</a></a></a>"><a href="URL_3WORG/2000/svg"><a href="URL_3WORG/2000/svg"><a href="URL_3WORG/2000/svg">URL_3WORG/2000/svg</a></a></a></a>"><path d="M1671 566q0 40-28 68l-724 724-136 136q-28 28-68 28t-68-28l-136-136-362-362q-28-28-28-68t28-68l136-136q28-28 68-28t68 28l294 295 656-657q28-28 68-28t68 28l136 136q28 28 28 68z" fill="#759E1A"></path></svg>
 
                     <h3>Montant de votre réservation : {{ price }} €.</h3><hr>
-                    <form action="{{ path('morad_billeterie_checkout') }}" method="POST">
+                    <form action="{{ path('morad_billeterie_checkout', {'id':id}) }}" method="POST">
                         <script
                                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                                data-key="pk_test_6ZlNIRvUytVmJ0z7YtQlW8Mz"
-                                data-amount="{{price *100}}"
+                                data-key="pk_test_XBKuP2draWVwsYShfzBQK16G"
+                                data-amount="{{price*100}}"
                                 data-name="Paiement par carte bancaire"
                                 data-locale="auto"
                                 data-currency="eur">
