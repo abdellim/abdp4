@@ -10,4 +10,16 @@ namespace Morad\BilleterieBundle\Repository;
  */
 class CoordonneesRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function myFindDQL($id)
+
+	{
+
+	  $query = $this->_em->createQuery('SELECT a.nom, a.prenom, a.codeReservation FROM MoradBilleterieBundle:Coordonnees a WHERE a.reservation = :id');
+	  $query->setParameter('id', $id);
+
+	  // Utilisation de getSingleResult car la requête ne doit retourner qu'un seul résultat
+
+	  return $query->getScalarResult();
+
+	}
 }

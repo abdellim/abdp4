@@ -17,10 +17,11 @@ class HomeController extends Controller
 
         $reservation = new Reservation();
         $form = $this->get('form.factory')->create(ReservationType::class, $reservation);
-        $date = $reservation->getDate()->format('d/m/Y');
+        $dateDay = $reservation->getDate()->format('d/m/Y');
+        $date = $reservation->check_dimanche($dateDay);
         $jourFerie = $reservation->isNotWorkable(time());
         if ($date == 1 || $jourFerie == true) {
-            $request->getSession()->getFlashBag()->add('reservationJf', " jkl");
+            $request->getSession()->getFlashBag()->add('reservationJf', "");
             return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
                 'form' => $form->createView(),
                 'date' => $date,
@@ -127,34 +128,27 @@ class HomeController extends Controller
                 $em->flush($prixTotal);
 
                 //On affiche la vue paiement
-                return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array('id' => $id, 'price' => $price,));
-                
+                return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array('id' => $id, 'price' => $price, 'value' => $value));
             }
         }
+
 
         return $this->render('MoradBilleterieBundle:Home:Coordonnees.html.twig', array(
             'formi' => $formi->createView(),
             'id' => $id,
             'reservation' => $reservation,
-            'data' => $data,
+            //'coordonnees' => $coordonnees,
             'date' => $date,
             'age' => $age,
-            'price' => $price,
         ));
     }
 
  /**
-
      * @Route(
-
      *     "/checkout",
-
      *     name="order_checkout",
-
      *     methods="POST"
-
      * )
-
      */
     public function checkoutAction($id,Request $request)
     {
@@ -162,7 +156,12 @@ class HomeController extends Controller
         $em = $this->getDoctrine()->getManager();
         $reservation = $em->getRepository('MoradBilleterieBundle:Reservation')->find($id);
         $price = $reservation->getPrix();
+        $date = $reservation->getDate();
         $email = $reservation->getEmail();
+            
+        // On récupère la reservation $id
+        $id = $reservation->getId();
+        $coordonnees = $em->getRepository('MoradBilleterieBundle:Coordonnees')->myFindDQL($id);
 
         $stripe = array(
           "secret_key"      => "sk_test_SbnNanLBqWn9GHDIvWMYQVXo",
@@ -188,22 +187,38 @@ class HomeController extends Controller
                 "description" => "Paiement Musée du Louvre"
             ));
             $this->addFlash("paiementSuccess","");
+            $message = \Swift_Message::newInstance();
+            $message->setSubject("Votre réservation - Billeterie du Louvre");
+            $message->setFrom('contact@louvre.fr');
+            $message->setTo($email);
+            // pour envoyer le message en HTML
+            $message->setBody(
+                $this->renderView(
+                'Emails/registration.html.twig',
+                array(
+                    'date' => $date,
+                    'price' => $price,
+                    'coordonnees' => $coordonnees,
+                    )
+                ),
+                'text/html'
+            );
+            $message->attach(\Swift_Attachment::fromPath('logo-louvre.png'));
+            //envoi du message
+            $this->get('mailer')->send($message);
             return $this->redirectToRoute('morad_billeterie_homepage');
         } catch(\Stripe\Error\Card $e) {
 
             $this->addFlash("paiementError","");
             return $this->redirectToRoute('morad_billeterie_homepage');
         }
+
         return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array(
-                    'price' =>$price
-                    ));
-    }    
+            'price' => $price,
+            
+    
 
-
-
-
-
-
-
+            ));
+    }
 
 }

@@ -1,7 +1,5 @@
 <h3>Formulaire d'annonce</h3>
 
-
-
 <div class="well">
   {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
 
@@ -25,8 +23,7 @@
 
   {% for message in app.session.flashbag.get('quantite') %}
        
-  
-      <p class="alert alert-danger" style="font-size: 14px;"><U>Attention:</U> {{ message }}</p>
+    <p class="alert alert-danger" style="font-size: 14px;"><U>Attention:</U> {{ message }}</p>
 
   {% endfor %}
 
