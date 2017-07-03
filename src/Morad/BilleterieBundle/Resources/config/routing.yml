@@ -13,3 +13,7 @@ morad_billeterie_checkout:
     defaults : { _controller: MoradBilleterieBundle:Home:checkout }
     requirements:
       id: \d+
+
+morad_billeterie_mentions:
+    path:       /mentions_legales
+    defaults: { _controller: MoradBilleterieBundle:Home:mentionsLegales }

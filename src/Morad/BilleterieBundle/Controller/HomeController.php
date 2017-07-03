@@ -24,8 +24,6 @@ class HomeController extends Controller
             $request->getSession()->getFlashBag()->add('reservationJf', "");
             return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
                 'form' => $form->createView(),
-                'date' => $date,
-                'jourFerie' => $jourFerie,
             ));
         }
 
@@ -47,8 +45,8 @@ class HomeController extends Controller
                 if ($quantite > $placeDispo) {
                     $request->getSession()->getFlashBag()->add('quantite', "La quantité maximum à été atteinte pour cette date. Il ne reste que $placeDispo place(s) pour cette date.");
                     return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
-                   'form' => $form->createView(),
-                   'jourFerie' => $jourFerie,
+                       'form' => $form->createView(),
+                       'jourFerie' => $jourFerie,
                     ));
                 }
                 else {
@@ -79,7 +77,8 @@ class HomeController extends Controller
         $id = $reservation->getID();
         $price = 0;
         $prix = 0;
-        $age = '';
+ 
+
 
         //Boucle pour créer x objet coordonnees en fonction de la quantité
         for ($i=0; $i < $quantite ; $i++) {
@@ -128,7 +127,11 @@ class HomeController extends Controller
                 $em->flush($prixTotal);
 
                 //On affiche la vue paiement
-                return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array('id' => $id, 'price' => $price, 'value' => $value));
+                return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array(
+                    'id' => $id, 
+                    'price' => $price, 
+                    'value' => $value
+                ));
             }
         }
 
@@ -137,9 +140,8 @@ class HomeController extends Controller
             'formi' => $formi->createView(),
             'id' => $id,
             'reservation' => $reservation,
-            //'coordonnees' => $coordonnees,
             'date' => $date,
-            'age' => $age,
+
         ));
     }
 
@@ -168,9 +170,6 @@ class HomeController extends Controller
           "publishable_key" => "pk_test_XBKuP2draWVwsYShfzBQK16G"
         );
         \Stripe\Stripe::setApiKey($stripe['secret_key']);
-
-        // Get the credit card details submitted by the form
-        //$token = $_POST['stripeToken'];
         $token = $request->request->get('stripeToken');
 
         $customer = \Stripe\Customer::create(array(
@@ -215,10 +214,11 @@ class HomeController extends Controller
 
         return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array(
             'price' => $price,
-            
-    
+        ));
+    }
 
-            ));
+    public function mentionsLegalesAction() {
+        return $this->render('MoradBilleterieBundle:Home:mentions/mentionsLegales.html.twig');
     }
 
 }

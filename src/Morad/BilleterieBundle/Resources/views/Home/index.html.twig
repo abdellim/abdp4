@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html>
   <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{% block title %}Billeterie du Louvre{% endblock %}</title>
+  <title>Billeterie du Louvre</title>
 
     {% block stylesheets %}
     {# On charge le CSS de bootstrap depuis le site directement #}
@@ -22,21 +21,27 @@
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header" style="text-align: center;">
             <div class="row">
-              <div class="col-md-6"><a class="navbar-brand" href="#">Billeterie du Louvre</a></div>
+              <div class="col-md-6"><a class="navbar-brand" href="{{ path("morad_billeterie_homepage") }}">Billeterie du Louvre</a></div>
               <div class="col-md-6"><img src="http://localhost/p4/web/logo-louvre.png" alt="good vybes" /></div>
             </div>
           </div>
         </div>
-
       </div><!-- /.container-fluid -->
     </nav>
+
     <div class="container-fluid">
       {% for message in app.session.flashbag.get('paiementSuccess') %}
-        <script>alert("Merci pour votre réservation, votre réservation vous a été envoyé par mail.")</script>
+        <script>
+          alert("Merci pour votre réservation, votre réservation vous a été envoyé par mail.")
+        </script>
       {% endfor %}
+
       {% for message in app.session.flashbag.get('paiementError') %}
-        <script>alert("La réservation a échoué, veuillez réessayer.")</script>
+        <script>
+          alert("La réservation a échoué, veuillez réessayer.")
+        </script>
       {% endfor %}
+
       <div class="col-md-6">
         <div class="jumbotron" style="background-color: #e6ffff; opacity: 0.85">
           {% block tarif %}
@@ -47,15 +52,14 @@
         <div class="jumbotron">
           {% block titre %}
           {% endblock %}
-          {{ include("MoradBilleterieBundle:Home:form.html.twig") }}
+          {{ include("MoradBilleterieBundle:Home:form/form.html.twig") }}
         </div>
       </div>
-{{ dump(date)}}
     </div>
   </body>
-  <footer class="footer">
+  <footer class="footer" style=" background-color: white">
     <div class="container">
-      <p class="text-muted" style="text-align: center;">E-Billeterie - Musée du Louvre</p>
+      <p class="text-muted" style="text-align: center;">E-Billeterie - Musée du Louvre - <a href="{{ path("morad_billeterie_mentions") }}" >Mentions légales</a></p>
     </div>
   </footer>
   {% block javascripts %}
