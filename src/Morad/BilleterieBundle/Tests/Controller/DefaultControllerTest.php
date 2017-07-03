@@ -3,8 +3,9 @@
 namespace Morad\BilleterieBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUunit\Framework\TestCase;
 
-class DefaultControllerTest extends WebTestCase
+class CoordonneesRepositoryTest extends TestCase
 {
     public function testIndex()
     {
@@ -13,5 +14,13 @@ class DefaultControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/');
 
         $this->assertContains('Hello World', $client->getResponse()->getContent());
+    }
+
+    //creer des methodes pour tester des methodes
+
+    public function testCannotGetFromInvalidId() 
+    {
+    	$this-> expectException(InvalidArgumentException:: class);
+    	CoordonneesRepository:: myFindDQL('a');
     }
 }

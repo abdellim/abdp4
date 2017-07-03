@@ -28,11 +28,14 @@ class CoordonneesType extends AbstractType
             ->add('nom', TextType::class)
             ->add('prenom', TextType::class)
             ->add('dateDeNaissance', BirthdayType::class, array(
-            'format' => 'dd-MM-yyyy',
-            'input' => 'datetime',
+                'format' => 'dd-MM-yyyy',
+                'years' => range(1920, date('Y')),
+
             ))
             ->add('tarifReduit', CheckboxType::class, array('required' => false))
-            ->add('pays', CountryType::class)
+            ->add('pays', CountryType::class, array(
+                'preferred_choices' => array('FR')
+            ))
             ;
     }
     
