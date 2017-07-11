@@ -42,6 +42,15 @@
   {% block javascripts %}
       <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
       <script src="{{ asset('bundles/js/jquery-ui.js') }}"></script>
-      <script src="{{ asset('bundles/js/main.js') }}"></script>
+      <script type="text/javascript">
+        $(':checkbox').change(function(){
+          var id='msg_'+$(this).attr('id');
+            if($(this).is(':checked')){
+              $(this).after('<p id="'+id+'"><i>Merci de vous munir d\'un justificatif le jour de votre visite</i></p>')
+            }else if(!($(this).is(':checked'))){
+              $('#'+id).remove();
+            }
+        });
+      </script>
   {% endblock %}
 </html>

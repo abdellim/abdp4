@@ -242,7 +242,7 @@ class Reservation
         }
 
         $date = date('d-m-Y'); 
-       // $date = '01/01/2017';
+       //$date = '25/01/2017';
         $date = strtotime($date);
  
         $year = date('Y',$date);
