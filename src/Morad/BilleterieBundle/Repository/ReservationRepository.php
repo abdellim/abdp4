@@ -26,40 +26,13 @@ class ReservationRepository extends \Doctrine\ORM\EntityRepository
 		 ->getQuery()
 		 ->getArrayResult();
 		$messi = count($select);
-		/*for ($i=0; $i <$messi ; $i++) { 
-			$select;
-		}*/
+
 		$messi = 0;
 		foreach($select AS $article) {
 	    $messi += $article['quantite'];
 		}
-
-		
 		 
 		return $messi;
 	}
-
-  public function getAge($id)
-
-  {
-    $select =  $this->createQueryBuilder('a')
-     ->select ('a.quantite')
-     ->where('a.reservtation_id = :$id')->setParameter('date', $date)
-     ->getQuery()
-     ->getArrayResult();
-    $messi = count($select);
-    /*for ($i=0; $i <$messi ; $i++) { 
-      $select;
-    }*/
-    $messi = 0;
-    foreach($select AS $article) {
-      $messi += $article['quantite'];
-    }
-
-    
-     
-    return $messi;
-  }
-
 
 }

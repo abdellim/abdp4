@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 
 //Vérifie si il l'id existe = envoi une erreur
-class CoordonneesRepositoryTest extends KernelTestCase
+class ReservationRepositoryTest extends KernelTestCase
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -26,13 +26,13 @@ class CoordonneesRepositoryTest extends KernelTestCase
             ->getManager();
     }
 
-    public function testSearchCoordonneesById()
+    public function testSearchReservationById()
     {
-        $coordonnees = $this->em
-            ->getRepository('MoradBilleterieBundle:Coordonnees')
-            ->myFindDQL('215')
+        $Reservation = $this->em
+            ->getRepository('MoradBilleterieBundle:Reservation')
+            ->find('217')
         ;
-        $this->assertTrue(count($coordonnees) != 0);
+        $this->assertTrue(count($Reservation) != 0);
     }
 
     /**

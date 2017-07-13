@@ -248,6 +248,9 @@ class Coordonnees
     public function getPrix($age, $journee)
     {
         $tarifReduit = $this->getTarifReduit();
+        if ($age >= 0 && $age < 4) {
+            $prix = 0;
+        }
         if ($age >= 12) {
             $prix = 16;
         }

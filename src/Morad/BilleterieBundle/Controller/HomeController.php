@@ -14,7 +14,6 @@ class HomeController extends Controller
 {
     public function indexAction(Request $request)
     {
-
         $reservation = new Reservation();
         $form = $this->get('form.factory')->create(ReservationType::class, $reservation);
         $dateDay = $reservation->getDate()->format('d/m/Y');
@@ -26,7 +25,6 @@ class HomeController extends Controller
                 'form' => $form->createView(),
             ));
         }
-
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -60,8 +58,6 @@ class HomeController extends Controller
         
         return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
            'form' => $form->createView(),
-           'date' => $date,
-           'jourFerie' => $jourFerie,
         ));
     }
 
@@ -84,11 +80,11 @@ class HomeController extends Controller
         for ($i=0; $i < $quantite ; $i++) {
             $data["coordonnees"][] = new Coordonnees();  
         }
-        $formi = $this->get('form.factory')->create(CoordonneesRelaiType::class, $data);
+        $formCordonnees = $this->get('form.factory')->create(CoordonneesRelaiType::class, $data);
 
         if ($request->isMethod('POST')) {
-            $formi->handleRequest($request);
-            if ($formi->isValid()) {
+            $formCordonnees->handleRequest($request);
+            if ($formCordonnees->isValid()) {
                 $prix = array();
                 foreach ($data["coordonnees"] as $value){
                     //Calcul de l'age
@@ -129,19 +125,15 @@ class HomeController extends Controller
                 //On affiche la vue paiement
                 return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array(
                     'id' => $id, 
-                    'price' => $price, 
-                    'value' => $value
+                    'price' => $price,
                 ));
             }
         }
 
 
         return $this->render('MoradBilleterieBundle:Home:Coordonnees.html.twig', array(
-            'formi' => $formi->createView(),
-            'id' => $id,
+            'formCordonnees' => $formCordonnees->createView(),
             'reservation' => $reservation,
-            'date' => $date,
-
         ));
     }
 

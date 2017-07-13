@@ -3,8 +3,8 @@
     	<h2>Réservation du {{ reservation.date|date('d/m/y') }}</h2><hr>
 	</div>
     {% set i = 0 %}
-	{{ form_start(formi) }} 
-	{% for coordonneesField in formi.coordonnees %}
+	{{ form_start(formCordonnees) }} 
+	{% for coordonneesField in formCordonnees.coordonnees %}
 		{% set i = i+1 %}
 		<div class="well">
 			<h3>Participant {{ i }}</h3>
@@ -12,8 +12,8 @@
 	        {{ form_widget(coordonneesField) }}
 	    </div>
 	{% endfor %}
-	{{ form_rest(formi) }}
-	{{ form_end(formi) }}
+	{{ form_rest(formCordonnees) }}
+	{{ form_end(formCordonnees) }}
 </div>
 
   

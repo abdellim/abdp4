@@ -9,8 +9,8 @@
     {% block stylesheets %}
     {# On charge le CSS de bootstrap depuis le site directement #}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ asset('bundles/js/jquery-ui.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('appli/js/jquery-ui.css') }}">
+    <link rel="stylesheet" href="{{ asset('appli/style.css') }}">
     {% endblock %}
 
   </head>
@@ -21,7 +21,7 @@
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header" style="text-align: center;">
             <div class="row">
-              <div class="col-md-6"><a class="navbar-brand" href="#">Billeterie du Louvre</a></div>
+              <div class="col-md-6"><a class="navbar-brand" href="{{ path("morad_billeterie_homepage") }}">Billeterie du Louvre</a></div>
               <div class="col-md-6"><img src="http://localhost/p4/web/logo-louvre.png" alt="good vybes" /></div>
             </div>
           </div>
@@ -31,7 +31,6 @@
     </nav>
     <div class="container-fluid">
           {{ include("MoradBilleterieBundle:Home:form/contentFormCoordonnees.html.twig") }}
-          {{ dump(reservation) }}
     </div>
 
   </body>
@@ -42,7 +41,7 @@
   </footer>
   {% block javascripts %}
       <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-      <script src="{{ asset('bundles/js/jquery-ui.js') }}"></script>
+      <script src="{{ asset('appli/js/jquery-ui.js') }}"></script>
       <script type="text/javascript">
         $(':checkbox').change(function(){
           var id='msg_'+$(this).attr('id');
