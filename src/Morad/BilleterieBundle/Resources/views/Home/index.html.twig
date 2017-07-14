@@ -42,6 +42,12 @@
         </script>
       {% endfor %}
 
+      {% for message in app.session.flashbag.get('ErrorPrice') %}
+        <script>
+          alert('Attention: Veuillez selectionner au moins un billet "Adulte, Enfant, Senior" en plus du billet enfant de moins de 4 ans.')
+        </script>
+      {% endfor %}
+
       <div class="col-md-6">
         <div class="jumbotron" style="background-color: #e6ffff; opacity: 0.85">
           {% block tarif %}

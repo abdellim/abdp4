@@ -12,11 +12,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 class ReservationRepository extends \Doctrine\ORM\EntityRepository
 {
-  public function myFindAll()
-  {
-
-  }
-
   public function findByQuantiteAndDate($date)
 
 	{

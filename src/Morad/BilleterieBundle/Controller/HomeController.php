@@ -44,7 +44,6 @@ class HomeController extends Controller
                     $request->getSession()->getFlashBag()->add('quantite', "La quantité maximum à été atteinte pour cette date. Il ne reste que $placeDispo place(s) pour cette date.");
                     return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
                        'form' => $form->createView(),
-                       'jourFerie' => $jourFerie,
                     ));
                 }
                 else {
@@ -121,16 +120,19 @@ class HomeController extends Controller
                 $prixTotal = $reservation->setPrix($price);
                 $em->persist($prixTotal);
                 $em->flush($prixTotal);
-
+                
+                if ($price == 0) {
+                    $request->getSession()->getFlashBag()->add('ErrorPrice', "");
+                    return $this->redirectToRoute('morad_billeterie_homepage');
+                } else {
                 //On affiche la vue paiement
                 return $this->render('MoradBilleterieBundle:Home:paiement.html.twig', array(
                     'id' => $id, 
                     'price' => $price,
                 ));
+                }
             }
         }
-
-
         return $this->render('MoradBilleterieBundle:Home:Coordonnees.html.twig', array(
             'formCordonnees' => $formCordonnees->createView(),
             'reservation' => $reservation,

@@ -244,7 +244,6 @@ class Coordonnees
 
 
 
-
     public function getPrix($age, $journee)
     {
         $tarifReduit = $this->getTarifReduit();
