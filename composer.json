@@ -1,3 +1,4 @@
+namespace Morad\BilleterieBundle;
 {
     "name": "morad/p4",
     "description" :"Projet 4 - Musée du Louvre",
