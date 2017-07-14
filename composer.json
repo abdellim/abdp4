@@ -1,5 +1,6 @@
 {
     "name": "morad/p4",
+    "description" :"Projet 4 - Musée du Louvre",
     "license": "proprietary",
     "type": "project",
     "autoload": {
