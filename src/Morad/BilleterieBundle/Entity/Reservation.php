@@ -222,7 +222,7 @@ class Reservation
         return $this->coordonnees;
     }
 
-    public function check_dimanche($dateD) {
+    public function checkDimanche($dateD) {
         preg_match(' /([0-9]+)\/([0-9]+)\/([0-9]+)/ ', $dateD , $match );
         $date = date("l", mktime(0, 0, 0, $match[2], $match[1], $match[3]));
         $date = trim($date);

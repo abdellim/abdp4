@@ -17,9 +17,9 @@ class HomeController extends Controller
         $reservation = new Reservation();
         $form = $this->get('form.factory')->create(ReservationType::class, $reservation);
         $dateDay = $reservation->getDate()->format('d/m/Y');
-        $date = $reservation->check_dimanche($dateDay);
+        $date = $reservation->checkDimanche($dateDay);
         $jourFerie = $reservation->isNotWorkable(time());
-        if ($date == 1 || $jourFerie == true) {
+        if ($date == 1 || $jourFerie = true) {
             $request->getSession()->getFlashBag()->add('reservationJf', "");
             return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
                 'form' => $form->createView(),
@@ -120,7 +120,7 @@ class HomeController extends Controller
                 $prixTotal = $reservation->setPrix($price);
                 $em->persist($prixTotal);
                 $em->flush($prixTotal);
-                
+
                 if ($price == 0) {
                     $request->getSession()->getFlashBag()->add('ErrorPrice', "");
                     return $this->redirectToRoute('morad_billeterie_homepage');
