@@ -72,7 +72,7 @@ class HomeController extends Controller
         $id = $reservation->getID();
         $price = 0;
         $prix = 0;
- 
+        $email = $reservation->getEmail();
 
 
         //Boucle pour créer x objet coordonnees en fonction de la quantité
@@ -122,7 +122,27 @@ class HomeController extends Controller
                 $em->flush($prixTotal);
 
                 if ($price == 0) {
-                    $request->getSession()->getFlashBag()->add('ErrorPrice', "");
+                    $this->addFlash("paiementSuccess","");
+                    $coordonnees = $em->getRepository('MoradBilleterieBundle:Coordonnees')->myFindDQL($id);
+                    $message = \Swift_Message::newInstance();
+                    $message->setSubject("Votre réservation - Billeterie du Louvre");
+                    $message->setFrom('contact@louvre.fr');
+                    $message->setTo($email);
+                    // pour envoyer le message en HTML
+                    $message->setBody(
+                        $this->renderView(
+                        'Emails/registration.html.twig',
+                        array(
+                            'date' => $date,
+                            'price' => $price,
+                            'coordonnees' => $coordonnees,
+                            )
+                        ),
+                        'text/html'
+                    );
+                    $message->attach(\Swift_Attachment::fromPath('logo-louvre.png'));
+                    //envoi du message
+                    $this->get('mailer')->send($message);
                     return $this->redirectToRoute('morad_billeterie_homepage');
                 } else {
                 //On affiche la vue paiement
