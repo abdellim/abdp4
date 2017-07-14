@@ -261,7 +261,7 @@ class Coordonnees
             $prix = 12;
         }
         
-        if ($tarifReduit == true) {
+        if ($tarifReduit === true) {
             $prix = 10;
         }
         if ($journee == 0) {

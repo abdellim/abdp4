@@ -19,7 +19,7 @@ class HomeController extends Controller
         $dateDay = $reservation->getDate()->format('d/m/Y');
         $date = $reservation->checkDimanche($dateDay);
         $jourFerie = $reservation->isNotWorkable(time());
-        if ($date == 1 || $jourFerie = true) {
+        if ($date == 1 || $jourFerie === true) {
             $request->getSession()->getFlashBag()->add('reservationJf', "");
             return $this->render('MoradBilleterieBundle:Home:content.html.twig', array(
                 'form' => $form->createView(),
